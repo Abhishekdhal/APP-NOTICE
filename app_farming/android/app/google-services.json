@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "439561481727",
+    "project_id": "farmers-for-india",
+    "storage_bucket": "farmers-for-india.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439561481727:android:d475ebd584e5814b7ecbca",
+        "android_client_info": {
+          "package_name": "com.abhishek.farmingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiJWgekY9iArqRu90Aosq2bhPobtZOTaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
