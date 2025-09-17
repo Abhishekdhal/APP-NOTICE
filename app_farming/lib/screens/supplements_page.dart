@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupplementsPage extends StatelessWidget {
-  final List<Map<String, String>> products = [
+  const SupplementsPage({super.key});
+
+  final List<Map<String, String>> products = const [
     {
       "name": "Organic Fertilizer",
       "image": "assets/images/fertilizer.jpg", // local asset image
@@ -91,28 +93,3 @@ class SupplementsPage extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-
-// class SupplementsPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Supplements at Low Costs")),
-//       body: Center(
-//         child: Text("Here you can compare prices of farming supplements."),
-//       ),
-//     );
-//   }
-// }

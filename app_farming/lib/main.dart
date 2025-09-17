@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // ✅ Required for Firebase init
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/splash_screen.dart'; // ✅ Your splash screen
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // ✅ Initialize Firebase
 
-  runApp(FarmersApp());
+  // ✅ Initialize Supabase
+  await Supabase.initialize(
+    url: 'https://hvwhgvjaxbluwvtsiygo.supabase.co', // Supabase URL
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d2hndmpheGJsdXd2dHNpeWdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwNDIwMDAsImV4cCI6MjA3MzYxODAwMH0.yYJtNJtSXUnAsRNWyk8D3Tj0AeUCUOPb1njZ74n8FPI', // anon key
+  );
+
+  runApp(const FarmersApp());
 }
 
 class FarmersApp extends StatelessWidget {
+  const FarmersApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Farmers For India",
+      title: "KRISHINOOR",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.green),
-      home: SplashScreen(), // ✅ Start app with SplashScreen
+      home: const SplashScreen(), // ✅ Start app with SplashScreen
     );
   }
 }

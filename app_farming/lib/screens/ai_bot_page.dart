@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AIBotPage extends StatefulWidget {
+  const AIBotPage({super.key});
+
   @override
-  _AIBotPageState createState() => _AIBotPageState();
+  State<AIBotPage> createState() => _AIBotPageState();
 }
 
 class _AIBotPageState extends State<AIBotPage> {

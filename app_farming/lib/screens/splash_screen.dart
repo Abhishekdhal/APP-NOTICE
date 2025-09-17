@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'home_page.dart'; // make sure you created home_page.dart in screens/
+import 'package:flutter_application_1/screens/home_page.dart';
+import 'package:flutter_application_1/screens/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  final String fullText = "FARMERS FOR INDIA";
+  final String fullText = "KRISHINOOR";
   String currentText = "";
   int _index = 0;
   Timer? _timer;
@@ -22,14 +26,13 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Animation controller for image
     _imageController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
     );
 
     _imageSlide = Tween<Offset>(
-      begin: Offset(0, 0.3),
+      begin: const Offset(0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _imageController, curve: Curves.easeOut));
 
@@ -38,8 +41,8 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeIn,
     );
 
-    // Start text animation
-    _timer = Timer.periodic(Duration(milliseconds: 150), (timer) {
+    // Typewriter effect for text
+    _timer = Timer.periodic(const Duration(milliseconds: 150), (timer) {
       if (_index < fullText.length) {
         setState(() {
           currentText += fullText[_index];
@@ -47,16 +50,21 @@ class _SplashScreenState extends State<SplashScreen>
         });
       } else {
         timer.cancel();
-
-        // Play image animation
         _imageController.forward();
 
         // Navigate after short delay
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () async {
+          if (!mounted) return;
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool isLoggedIn = prefs.getString("name") != null;
+
           if (!mounted) return;
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => HomePage()),
+            MaterialPageRoute(
+              builder: (_) => isLoggedIn ? const HomePage() : const LoginPage(),
+            ),
           );
         });
       }
@@ -75,34 +83,49 @@ class _SplashScreenState extends State<SplashScreen>
     final double textSize = MediaQuery.of(context).size.width * 0.08 + 8;
 
     return Scaffold(
-      backgroundColor: Colors.black, // Netflix-style black
-      body: Center(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        // 🌿 Constant farming gradient background
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green.shade700, Colors.lightGreen.shade300],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Text (Netflix style)
+            // App name typing
             Text(
               currentText,
               style: TextStyle(
                 fontSize: textSize,
                 fontWeight: FontWeight.bold,
-                color: Colors.red, // Netflix red
+                color: Colors.white,
                 letterSpacing: 2,
+                shadows: const [
+                  Shadow(
+                    blurRadius: 8,
+                    color: Colors.black54,
+                    offset: Offset(2, 2),
+                  ),
+                ],
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 30),
 
-            SizedBox(height: 30),
-
-            // Image (farm2.png) with fade + slide
+            // Farm image with fade + slide
             FadeTransition(
               opacity: _imageFade,
               child: SlideTransition(
                 position: _imageSlide,
                 child: Image.asset(
                   'assets/images/farm2.png',
-                  width: 150,
-                  height: 150,
+                  width: 160,
+                  height: 160,
                   fit: BoxFit.contain,
                 ),
               ),

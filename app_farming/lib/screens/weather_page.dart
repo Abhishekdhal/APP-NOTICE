@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherPage extends StatefulWidget {
+  const WeatherPage({super.key});
+
   @override
-  _WeatherPageState createState() => _WeatherPageState();
+  State<WeatherPage> createState() => _WeatherPageState();
 }
 
 class _WeatherPageState extends State<WeatherPage> {
@@ -35,28 +37,28 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Weather")),
+      appBar: AppBar(title: const Text("Weather")),
       body: Center(
         child: weatherData == null
-            ? CircularProgressIndicator()
+            ? const CircularProgressIndicator()
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "${weatherData!['name']}",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Image.network(
                     "http://openweathermap.org/img/wn/${weatherData!['weather'][0]['icon']}@2x.png",
                   ),
                   Text(
                     "${weatherData!['main']['temp']} °C",
-                    style: TextStyle(fontSize: 32),
+                    style: const TextStyle(fontSize: 32),
                   ),
                   Text(
                     "${weatherData!['weather'][0]['description']}",
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ],
               ),
@@ -64,24 +66,3 @@ class _WeatherPageState extends State<WeatherPage> {
     );
   }
 }
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-
-// class WeatherPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Weather Forecast")),
-//       body: Center(
-//         child: Text("Weather Forecast & Cultivation Prediction will appear here."),
-//       ),
-//     );
-//   }
-// }
