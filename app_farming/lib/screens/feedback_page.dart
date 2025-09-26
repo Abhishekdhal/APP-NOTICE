@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/supabase_service.dart';
+import '../l10n/app_localizations.dart';
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -18,7 +19,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
   File? _selectedImage;
   bool _isSubmitting = false;
 
-  /// 📸 Pick image
   Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked != null) {
@@ -28,12 +28,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
   }
 
-  /// 🚀 Submit feedback to Supabase
   Future<void> _submitFeedback() async {
+    final loc = AppLocalizations.of(context)!;
+
     if (_nameController.text.isEmpty || _messageController.text.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ Please enter name and feedback")),
+        SnackBar(content: Text(loc.pleaseEnter)),
       );
       return;
     }
@@ -60,20 +61,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
     if (!mounted) return;
 
-    // 👉 Show Thank You Popup
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("🎉 Thank You!"),
-        content: const Text(
-          "Your feedback has been submitted successfully.\nWe appreciate your time 💚",
-          style: TextStyle(fontSize: 16),
-        ),
+        title: Text(loc.thankYou),
+        content: Text(loc.thankYouMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
+            child: Text(loc.ok),
           ),
         ],
       ),
@@ -82,10 +79,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("💬 Feedback"),
+        title: Text(loc.feedbackTitle),
         centerTitle: true,
         backgroundColor: Colors.green.shade700,
       ),
@@ -101,9 +100,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "We value your feedback 💚",
-                    style: TextStyle(
+                  Text(
+                    loc.feedbackHeader,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
@@ -114,7 +113,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: "Your Name",
+                      labelText: loc.yourName,
                       prefixIcon: const Icon(Icons.person),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -126,7 +125,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     controller: _messageController,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      labelText: "Your Feedback",
+                      labelText: loc.yourFeedback,
                       alignLabelWithHint: true,
                       prefixIcon: const Icon(Icons.message),
                       border: OutlineInputBorder(
@@ -136,14 +135,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // image preview
                   if (_selectedImage != null)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.file(_selectedImage!, height: 150),
                     )
                   else
-                    const Text("📷 No image selected"),
+                    Text(loc.noImage),
 
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
@@ -155,7 +153,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     ),
                     onPressed: _pickImage,
                     icon: const Icon(Icons.photo),
-                    label: const Text("Upload Photo"),
+                    label: Text(loc.uploadPhoto),
                   ),
                   const SizedBox(height: 20),
 
@@ -174,9 +172,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                          : const Text(
-                              "Submit Feedback",
-                              style: TextStyle(fontSize: 18),
+                          : Text(
+                              loc.submitFeedback,
+                              style: const TextStyle(fontSize: 18),
                             ),
                     ),
                   ),

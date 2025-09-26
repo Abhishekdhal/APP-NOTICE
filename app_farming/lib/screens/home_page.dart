@@ -1,74 +1,162 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../l10n/app_localizations.dart';
+import 'ai_bot_page.dart';
 import 'supplements_page.dart';
 import 'weather_page.dart';
-import 'ai_bot_page.dart';
 import 'notice_board_page.dart';
 import 'iot_farming_page.dart';
 import 'soil_health_page.dart';
 import 'market_price_page.dart';
 import 'problem_upload_page.dart';
 import 'feedback_page.dart';
+import 'profile_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-  final List<String> features = const [
-    "Supplements",
-    "Weather",
-    "AI Bot",
-    "Notice Board",
-    "IoT Farming",
-    "Soil Health",
-    "Market Prices",
-    "Crop Problem Detector",
-    "Feedback",
-  ];
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
-  final List<IconData> icons = const [
-    Icons.shopping_cart,
-    Icons.cloud,
-    Icons.smart_toy,
-    Icons.campaign,
-    Icons.agriculture,
-    Icons.science, // Soil Health
-    Icons.trending_up, // Market Prices
-    Icons.report_problem, // Report Problem
-    Icons.feedback, // Feedback
-  ];
+class _HomePageState extends State<HomePage> {
+  String? _name;
+  String? _email;
 
-  final List<Widget> pages = const [
-    SupplementsPage(),
-    WeatherPage(),
-    AIBotPage(),
-    NoticeBoardPage(),
-    IoTFarmingPage(),
-    SoilHealthPage(),
-    MarketPricePage(),
-    ProblemUploadPage(),
-    FeedbackPage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString("name") ?? "User";
+      _email = prefs.getString("email") ?? "";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final List<Map<String, dynamic>> features = [
+      {
+        "name": l10n.supplements,
+        "icon": Icons.shopping_cart,
+        "page": const SupplementsPage()
+      },
+      {"name": l10n.weather, "icon": Icons.cloud, "page": const WeatherPage()},
+      {"name": l10n.aiBot, "icon": Icons.smart_toy, "page": const AIBotPage()},
+      {
+        "name": l10n.noticeBoard,
+        "icon": Icons.campaign,
+        "page": const NoticeBoardPage()
+      },
+      {
+        "name": l10n.iotFarming,
+        "icon": Icons.agriculture,
+        "page": const IoTFarmingPage()
+      },
+      {
+        "name": l10n.soilHealth,
+        "icon": Icons.science,
+        "page": const SoilHealthPage()
+      },
+      {
+        "name": l10n.marketPrices,
+        "icon": Icons.trending_up,
+        "page": const MarketPricePage()
+      },
+      {
+        "name": l10n.cropProblemDetector,
+        "icon": Icons.report_problem,
+        "page": const ProblemUploadPage()
+      },
+      {
+        "name": l10n.feedback,
+        "icon": Icons.feedback,
+        "page": const FeedbackPage()
+      },
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Farmers of India")),
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Row(
+          children: [
+            InkWell(
+              onTap: () async {
+                final updated = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                );
+                if (updated == true) {
+                  _loadUserData(); // refresh after update
+                }
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.white, // ✅ white circle background
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/images/logo.png", // ✅ your logo
+                    fit: BoxFit.contain,
+                    width: 26,
+                    height: 26,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _name ?? "Loading...",
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  _email ?? "",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
+              if (!mounted) return;
+              Navigator.pop(context); // back to login
+            },
+          )
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: GridView.builder(
           itemCount: features.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 items per row
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
           itemBuilder: (context, index) {
-            return GestureDetector(
+            final feature = features[index];
+            return InkWell(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => pages[index]),
+                  MaterialPageRoute(builder: (_) => feature["page"]),
                 );
               },
+              borderRadius: BorderRadius.circular(15),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.green[100],
@@ -84,10 +172,10 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(icons[index], size: 50, color: Colors.green[800]),
+                    Icon(feature["icon"], size: 50, color: Colors.green[800]),
                     const SizedBox(height: 10),
                     Text(
-                      features[index],
+                      feature["name"],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
@@ -102,11 +190,9 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
-
-      // Floating AI Button
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
-        tooltip: "Ask AI Bot",
+        tooltip: l10n.askAIBot,
         onPressed: () {
           Navigator.push(
             context,
