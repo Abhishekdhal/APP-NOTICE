@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
-  final String apiKey = "2f184182c9504a3092a115647251509"; // Replace with your OpenWeatherMap API Key
+  final String apiKey = ; // Replace with your API Key
   final String city = "Bhubaneswar"; // Change to your city, or make it dynamic later
 
   Future<Map<String, dynamic>> fetchWeather() async {
